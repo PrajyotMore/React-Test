@@ -3,7 +3,7 @@ import "./App.css"
 
 function App() {
   const [classes, setClasses] = useState([
-    // Initial class data, you can add more if needed
+    // Initial class data, for adding multiple class
     {
       className: "Class - 1",
       students: [
@@ -17,7 +17,7 @@ function App() {
   ]);
 
   const handleAddClass = () => {
-    // Create a new class with an empty student
+    // This code for creating a new class with an empty student
     const newClass = {
       className: `Class - ${classes.length + 1}`,
       students: [
@@ -29,25 +29,25 @@ function App() {
       ],
     };
 
-    // Add the new class to the state
+    // This state will Add the new class into the state
     setClasses([...classes, newClass]);
   };
 
   const handleAddStudent = (classIndex) => {
-    // Create a new student with default values
+    // This will Create a new student with default values
     const newStudent = {
       firstName: "",
       lastName: "",
       gender: "Male",
     };
 
-    // Copy the existing classes array
+    //This will Copy the existing classes array
     const updatedClasses = [...classes];
 
-    // Add the new student to the specified class
+    // This will add the new student to the specified class
     updatedClasses[classIndex].students.push(newStudent);
 
-    // Update the state with the modified classes array
+    // Updating the state with the modified classes array
     setClasses(updatedClasses);
   };
 
@@ -63,8 +63,6 @@ function App() {
   };
 
   const handleSubmit = () => {
-    // Validate input fields (check for required fields)
-
     // Store data in local storage
     const dataToStore = classes.map((classItem) => {
       return classItem.students.map((student) => ({
@@ -75,8 +73,6 @@ function App() {
     });
 
     localStorage.setItem("studentData", JSON.stringify(dataToStore));
-
-    // Display validation errors (if any)
   };
 
   return (
