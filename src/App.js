@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import "./App.css"
+import "./App.css";
 
 function App() {
   const [classes, setClasses] = useState([
-    // Initial class data, for adding multiple class
+    // Initial class data, if you can add more if needed
     {
       className: "Class - 1",
       students: [
@@ -15,9 +15,12 @@ function App() {
       ],
     },
   ]);
-
+  const [validationErrors1, setValidationErrors1] = useState("");
+  const [validationErrors2, setValidationErrors2] = useState("");
+  const [validationErrors3, setValidationErrors3] = useState("");
+  console.log(validationErrors1, validationErrors2, validationErrors3);
   const handleAddClass = () => {
-    // This code for creating a new class with an empty student
+    // Create a new class with an empty student
     const newClass = {
       className: `Class - ${classes.length + 1}`,
       students: [
@@ -29,50 +32,85 @@ function App() {
       ],
     };
 
-    // This state will Add the new class into the state
+    // Add the new class to the state
     setClasses([...classes, newClass]);
   };
 
   const handleAddStudent = (classIndex) => {
-    // This will Create a new student with default values
+    // Create a new student with default values this will be initial level
     const newStudent = {
       firstName: "",
       lastName: "",
       gender: "Male",
     };
 
-    //This will Copy the existing classes array
-    const updatedClasses = [...classes];
-
-    // This will add the new student to the specified class
-    updatedClasses[classIndex].students.push(newStudent);
-
-    // Updating the state with the modified classes array
-    setClasses(updatedClasses);
-  };
-
-  const handleInputChange = (classIndex, studentIndex, key, value) => {
     // Copy the existing classes array
     const updatedClasses = [...classes];
 
-    // Update the specified student's property
-    updatedClasses[classIndex].students[studentIndex][key] = value;
+    // Add the new student to the specified class
+    updatedClasses[classIndex].students.push(newStudent);
 
     // Update the state with the modified classes array
     setClasses(updatedClasses);
   };
 
+  const handleInputChange = (classIndex, studentIndex, key, value) => {
+    // This will copy the existing classes array
+    const updatedClasses = [...classes];
+
+    // This will Update the specified student's property
+    updatedClasses[classIndex].students[studentIndex][key] = value;
+
+    // Clear the error message when the user starts entering a value
+  if (key === "firstName") {
+    setValidationErrors1("");
+  } else if (key === "lastName") {
+    setValidationErrors2("");
+  } else if (key === "gender") {
+    setValidationErrors3("");
+  }
+
+    //This will Update the state with the modified classes array
+    setClasses(updatedClasses);
+  };
+
   const handleSubmit = () => {
-    // Store data in local storage
-    const dataToStore = classes.map((classItem) => {
-      return classItem.students.map((student) => ({
-        firstName: student.firstName,
-        lastName: student.lastName,
-        gender: student.gender,
-      }));
+    // Initialize an array to store validation errors
+    let errors1 = "";
+    let errors2 = "";
+    let errors3 = "";
+    // Validate each student's data
+    classes.forEach((classItem, classIndex) => {
+      classItem.students.forEach((student, studentIndex) => {
+        if (!student.firstName.trim()) {
+          errors1 = `Please enter First Name`;
+        }
+        if (!student.lastName.trim()) {
+          errors2 = `Please enter Last Name`;
+        }
+        if (!student.gender.trim()) {
+          errors3 = `Please select Gender`;
+        }
+      });
     });
 
-    localStorage.setItem("studentData", JSON.stringify(dataToStore));
+    setValidationErrors1(errors1);
+    setValidationErrors2(errors2);
+    setValidationErrors3(errors3);
+
+    // If  no errors, proceed to submit
+    if (!errors1 && !errors2 && !errors3) {
+      // Storing data in local storage
+      const dataToStore = classes.map((classItem) => {
+        return classItem.students.map((student) => ({
+          firstName: student.firstName,
+          lastName: student.lastName,
+          gender: student.gender,
+        }));
+      });
+
+      localStorage.setItem("studentData", JSON.stringify(dataToStore));
+    }
   };
 
   return (
@@ -105,6 +143,9 @@ function App() {
                         )
                       }
                     />
+                   
+                      {<small>{validationErrors1}</small>}
+                    <br/>
                     <small>Required *</small>
                   </div>
                   <div className="form-input">
@@ -122,6 +163,8 @@ function App() {
                         )
                       }
                     />
+                    {<small>{validationErrors2}</small>}
+                    <br/>
                     <small>Required *</small>
                   </div>
                   <div className="form-input">
@@ -173,6 +216,8 @@ function App() {
                         <label>Other</label>
                       </div>
                     </div>
+                    {<small>{validationErrors3}</small>}
+                    <br/>
                     <small>Required *</small>
                   </div>
                 </div>
